@@ -1,0 +1,131 @@
+# Estructura base de nodo y lista enlazada para resolver los ejercicios
+
+import random
+
+class Nodo:
+    def __init__(self, dato):
+        self.dato = dato
+        self.siguiente = None
+
+class ListaEnlazada:
+    def __init__(self):
+        self.cabeza = None
+
+    # Ejercicio 1: Calcular longitud
+    def longitud(self):
+        actual = self.cabeza
+        contador = 0
+        while actual:
+            contador += 1
+            actual = actual.siguiente
+        return contador
+
+    # Ejercicio 2: Invertir la lista
+    def invertir(self):
+        anterior = None
+        actual = self.cabeza
+        while actual:
+            siguiente = actual.siguiente
+            actual.siguiente = anterior
+            anterior = actual
+            actual = siguiente
+        self.cabeza = anterior
+
+    # Ejercicio 3: Buscar dato y contar repeticiones
+    def buscar(self, valor):
+        actual = self.cabeza
+        contador = 0
+        while actual:
+            if actual.dato == valor:
+                contador += 1
+            actual = actual.siguiente
+        return contador if contador > 0 else f"Dato {valor} no encontrado."
+
+    # Ejercicio 4: Eliminar nodos fuera de un rango
+    def eliminar_fuera_rango(self, minimo, maximo):
+        dummy = Nodo(0)
+        dummy.siguiente = self.cabeza
+        anterior = dummy
+        actual = self.cabeza
+        while actual:
+            if actual.dato < minimo or actual.dato > maximo:
+                anterior.siguiente = actual.siguiente
+            else:
+                anterior = actual
+            actual = actual.siguiente
+        self.cabeza = dummy.siguiente
+
+    # Agregar al final
+    def agregar_final(self, valor):
+        nuevo = Nodo(valor)
+        if not self.cabeza:
+            self.cabeza = nuevo
+        else:
+            actual = self.cabeza
+            while actual.siguiente:
+                actual = actual.siguiente
+            actual.siguiente = nuevo
+
+    # Agregar al inicio
+    def agregar_inicio(self, valor):
+        nuevo = Nodo(valor)
+        nuevo.siguiente = self.cabeza
+        self.cabeza = nuevo
+
+    # Mostrar todos los datos
+    def mostrar(self):
+        actual = self.cabeza
+        while actual:
+            print(actual.dato, end=" -> ")
+            actual = actual.siguiente
+        print("None")
+
+# Función auxiliar para verificar números primos
+
+def es_primo(n):
+    if n < 2:
+        return False
+    for i in range(2, int(n ** 0.5) + 1):
+        if n % i == 0:
+            return False
+    return True
+
+# Función auxiliar para verificar números Armstrong
+
+def es_armstrong(n):
+    suma = sum(int(d) ** len(str(n)) for d in str(n))
+    return suma == n
+
+# Ejercicio 4: Crear lista con 50 números aleatorios entre 1 y 999
+lista = ListaEnlazada()
+for _ in range(50):
+    lista.agregar_final(random.randint(1, 999))
+
+# Luego puedes aplicar: lista.eliminar_fuera_rango(minimo, maximo)
+
+# Ejercicio 5: Lista de primos y lista de Armstrong
+primos = ListaEnlazada()
+armstrong = ListaEnlazada()
+
+for _ in range(50):
+    n = random.randint(1, 999)
+    if es_primo(n):
+        primos.agregar_final(n)
+    if es_armstrong(n):
+        armstrong.agregar_inicio(n)
+
+# Mostrar resultados
+print("Lista de primos:")
+primos.mostrar()
+print("Cantidad:", primos.longitud())
+
+print("Lista de Armstrong:")
+armstrong.mostrar()
+print("Cantidad:", armstrong.longitud())
+
+if primos.longitud() > armstrong.longitud():
+    print("La lista de primos contiene más elementos.")
+elif armstrong.longitud() > primos.longitud():
+    print("La lista de Armstrong contiene más elementos.")
+else:
+    print("Ambas listas tienen la misma cantidad de elementos.")
